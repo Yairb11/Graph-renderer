@@ -7,7 +7,19 @@
     <link href="{{url_for('static',filename='styles/style.css')}}" rel = "stylesheet"/>
     <script src="{{url_for('static', filename='js/p5.min.js')}}"></script>
     <script src="{{url_for('static', filename='js/sketch.js')}}"></script>
+    <script>
+        function send_graph(){
+            var user_input = document.getElementById("user_input").value;
+            var output = create_graph(user_input);
+            if(output != "all good"){
+                alert(output);
+            }
+            console.log(output);
+        }
+    </script>
 </head>
 <body>
+    <input type="text" id ="user_input" placeholder="Write the function...">
+    <button id="graph" onclick="send_graph()">Graph</button>
 </body>
 </html>
