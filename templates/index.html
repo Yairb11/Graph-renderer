@@ -10,10 +10,17 @@
     <script>
         function send_graph(){
             var user_input = document.getElementById("user_input").value;
-            var output = create_graph(user_input);
-            if(output != "All Good"){
+            var l_border = parseFloat(document.getElementById("L_border").value);
+            var r_border = parseFloat(document.getElementById("R_border").value);
+            var b_border = parseFloat(document.getElementById("B_border").value);
+            var t_border = parseFloat(document.getElementById("T_border").value);
+
+            if((r_border - l_border <= 0) || (t_border - b_border <= 0))
+                alert("Try Again");
+
+            var output = create_graph(user_input, l_border, r_border, b_border, t_border);
+            if(output != "All Good")
                 alert(output);
-            }
             console.log(output);
         }
     </script>
@@ -21,5 +28,9 @@
 <body>
     <input type="text" id ="user_input" placeholder="Write the function...">
     <button id="graph" onclick="send_graph()">Graph</button>
+     L: <input type="number" id="L_border" step="0.01" value="-10" required>
+     R: <input type="number" id="R_border" step="0.01" value="10" required>
+     B: <input type="number" id="B_border" step="0.01" value="-10" required>
+     T: <input type="number" id="T_border" step="0.01" value="10" required>
 </body>
 </html>
