@@ -129,7 +129,7 @@ function syntax(form) {
     var missing_pi_regex = /\d(pi)|\)(pi)|[xye](pi)|(pi)[xye]|(pi)\(|(pi)\d/;
     if (missing_pi_regex.test(form))
         return false; 
-    
+
     return true;
 }
 
@@ -158,7 +158,7 @@ function analysis(input){
     return [0, left_side, right_side, comp];
 }
 
-function formula(x, y, form){
+function tokening(form){
     
     var tokens = [];
     var i = 0;
@@ -191,7 +191,7 @@ function formula(x, y, form){
         } else 
             i++;
     }
-    var output_q = [];
+    var output_form = [];
     var op_stack = [];
     var priority = { '+': 1, '-': 1, '*': 2, '/': 2, '^': 3, 'neg': 4 };
     var right_associative = { '^': true, 'neg': true };
@@ -201,18 +201,18 @@ function formula(x, y, form){
     for (var t = 0; t < tokens.length; t++) {
         token =  tokens[t];
         if (typeof token == 'number' || token == 'x' || token == 'y' || token == 'e' || token == 'pi') 
-            output_q.push(token);
+            output_form.push(token);
         else if (functions.includes(token))
             op_stack.push(token);
         else if (token in priority) {
             while (op_stack.length > 0 && op_stack[op_stack.length - 1] !='(' && (functions.includes(op_stack[op_stack.length - 1]) || priority[op_stack[op_stack.length - 1]] > priority[token] || (priority[op_stack[op_stack.length - 1]] == priority[token] && !right_associative[token])))
-                output_q.push(op_stack.pop());
+                output_form.push(op_stack.pop());
             op_stack.push(token);
         } else if (token == '(')
             op_stack.push(token);
         else if (token == ')') {
             while (op_stack.length > 0 && op_stack[op_stack.length - 1] != '(') 
-                output_q.push(op_stack.pop());
+                output_form.push(op_stack.pop());
             if (op_stack.length == 0) 
                 throw new Error("Mismatched parentheses");
             op_stack.pop(); 
@@ -222,24 +222,28 @@ function formula(x, y, form){
         op = op_stack.pop();
         if (op == '(' || op == ')') 
             throw new Error("Mismatched parentheses");
-        output_q.push(op);
+        output_form.push(op);
     }
+    return output_form;
+}
 
+function formula(x, y, form){
     var eval_stack = [];
     var value_a, value_b;
-    for (var t = 0; t < output_q.length; t++){
-        token = output_q[t];
+    var functions = ['sin', 'cos', 'tan', 'sinh', 'cosh', 'tanh', 'arcsin', 'arccos', 'arctan', 'arcsinh', 'arccosh', 'arctanh', 'abs', 'ln', 'log', 'sqrt'];
+    for (var t = 0; t < form.length; t++){
+        token = form[t];
         if (typeof token == 'number') 
             eval_stack.push(token);
         else if (token == 'x')
             eval_stack.push(x);
         else if (token === 'y')
             eval_stack.push(y);
-        else if (token === 'e')
+        else if (token == 'e')
             eval_stack.push(Math.E);
-        else if (token === 'pi')
+        else if (token == 'pi')
             eval_stack.push(Math.PI);
-        else if (token === 'neg')
+        else if (token == 'neg')
             eval_stack.push(-eval_stack.pop());
         else if (functions.includes(token)) {
             value_a = eval_stack.pop();
@@ -474,10 +478,9 @@ function create_graph(input, user_l, user_r, user_b, user_t){
     if(error != 0)
         return 'Try again';
 
-    var left_side =  output[1];
-    var right_side =  output[2];
+    var left_side =  tokening(output[1]); 
+    var right_side = tokening(output[2]);
     var comp =  output[3];
-
     L = user_l;
     R = user_r;
     B = user_b;
