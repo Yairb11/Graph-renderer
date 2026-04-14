@@ -22,10 +22,14 @@
             if(output != "All Good")
                 alert(output);
             console.log(output);
+            document.getElementById("output").innerHTML = user_input;
+            
+
         }
     </script>
 </head>
 <body>
+    <div id="output"></div>
     <input type="text" id ="user_input" placeholder="Write the function...">
     <button id="graph" onclick="send_graph()">Graph</button>
      L: <input type="number" id="L_border" step="0.01" value="-10" required>
