@@ -1,2 +1,5 @@
 .venv
 .env
+main.py
+uv.lock
+

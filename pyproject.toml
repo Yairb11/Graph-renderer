@@ -1,7 +1,7 @@
 [project]
-name = "graph-renderer-with-2-free-variables-xy"
+name = "graph-renderer"
 version = "0.1.0"
-description = "Add your description here"
+description = "Graph renderer with 2 free variables xy"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

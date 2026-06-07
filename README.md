@@ -11,6 +11,10 @@
 
 *Most of the project is writen in javascript with a little html as an basic UI on top of a small python server with flask that uses port 8000 on the localhost*
 
+**Check requirements.txt**
+
+**Run server.py**
+
 ## The input is processed using 3 steps:
 1) Analyzing, where we check the type of comparison, divide to two different formulas(left side and right side), and checking syntax errors
 2) Tokenizing, divide it to chunks so we could perform the calculation of all the operations and the different functions
