@@ -4,10 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Graph Renderer</title>
-    <link href="{{url_for('static',filename='styles/style.css')}}" rel = "stylesheet"/>
-    <script src="{{url_for('static', filename='js/p5.min.js')}}"></script>
-    <script src="{{url_for('static', filename='js/sketch.js')}}"></script>
+    <link href="{{url_for('static',filename='styles/style.css')}}" rel = "stylesheet"/> <!--Connecting to stylesheet-->
+    <script src="{{url_for('static', filename='js/p5.min.js')}}"></script> <!--Connecting to p5.js-->
+    <script src="{{url_for('static', filename='js/sketch.js')}}"></script> <!--Connecting to js code-->
     <script>
+        /**
+        * Creating the graph canvas from the user input
+        * @param {string} user_input - User graph input with 2 variables
+        * @param {number} l_border - Minimum X value input in the graph
+        * @param {number} r_border - Maximum X value input in the graph
+        * @param {number} b_border - Minimum Y value input in the graph
+        * @param {number} t_border - Maximum Y value input in the graph
+        * @return {canvas} - The graph canvas for the pagw from the function create_graph
+        */
         function send_graph(){
             var user_input = document.getElementById("user_input").value;
             var l_border = parseFloat(document.getElementById("L_border").value);
@@ -29,12 +38,14 @@
     </script>
 </head>
 <body>
+    <!--Output canvas-->
     <div id="output"></div>
+    <!--User Input-->
     <input type="text" id ="user_input" placeholder="Write the function...">
     <button id="graph" onclick="send_graph()">Graph</button>
-     L: <input type="number" id="L_border" step="0.01" value="-10" required>
-     R: <input type="number" id="R_border" step="0.01" value="10" required>
-     B: <input type="number" id="B_border" step="0.01" value="-10" required>
-     T: <input type="number" id="T_border" step="0.01" value="10" required>
+     L: <input type="number" id="L_border" step="0.01" value="-10" required><!--Minimum X value input-->
+     R: <input type="number" id="R_border" step="0.01" value="10" required><!--Maximum X value input-->
+     B: <input type="number" id="B_border" step="0.01" value="-10" required><!--Minimum Y value input-->
+     T: <input type="number" id="T_border" step="0.01" value="10" required><!--Maximum Y value input-->
 </body>
 </html>

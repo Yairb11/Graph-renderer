@@ -1,3 +1,4 @@
+/*Defining basic graph values*/ 
 var W = 1280;
 var H = 720;
 var L = -10;
@@ -6,15 +7,20 @@ var B = -10;
 var T = 10;
 var PIXEL = 1;
 
+/*Defining basic color scheme*/ 
 var BLACK = '#000000';
 var WHITE = '#ffffff';
 var RED = '#ff0000';
 var GRAY = "#757575";
 
+/*Defining basic arithmetic functions*/ 
 const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
 const round_up = (n) => Math.ceil(n * 100) / 100;
 const round_down = (n) => Math.floor(n * 100) / 100;
 
+/**
+ * Creates emptygraph camvas with the defined basic graph values for the first setup canvas
+ */
 function setup() {
     createCanvas(W, H);
     background(WHITE);  
@@ -29,6 +35,11 @@ function setup() {
     } 
 }
 
+/**
+ * Colors rectangles for the graph canvas
+ * @param {color} c - Color of the rectangle
+ * @param {number array} u - Min and max values of X,Y for the rectangle position
+ */
 function paint_area(c, u){
     var l = u[0];
     var r = u[1];
@@ -37,9 +48,15 @@ function paint_area(c, u){
 
     fill(c);
     noStroke();
-    rect(l, t, r - l, b- t);
+    rect(l, t, r - l, b - t);
 }
 
+/**
+ * Gets user graph form, splits for the two sides of the equation and finds the type of comparison
+ * If user's input form is incorrect for this process it'll return comparison == -1 and 2 empty strings
+ * @param {string} input - User graph form input string
+ * @returns {array} - Array with 2 strings that are the two sides of the equation, and comparison number that indicate with comperison was in the input
+ */
 function find_comp(input){
     var all_comp = ["=", ">", "<", ">=", "<=", ">/<"];
     var all_places = [input.search("="), input.search(">"), input.search("<"), input.search(">="), input.search("<="), input.search(">/<")];
@@ -75,6 +92,11 @@ function find_comp(input){
     return [comp_array, comp];
 }
 
+/**
+ * Checks if user's graph form input was with the right amount of parentheses
+ * @param {string} form - User graph form input string
+ * @returns {bool} - Return if the input has the right amount of parentheses 
+ */
 function parentheses(form){
     var par = 0;
     var last_par = -1;
@@ -98,6 +120,11 @@ function parentheses(form){
     return true;
 }
 
+/**
+ * Checks if user's input contains the right math syntax for this graph with the right functions and symbols
+ * @param {string} form - User graph form input string
+ * @returns {bool} - Return if the input has correct math syntax
+ */
 function syntax(form) {
     var token_regex = /^(arcsinh|arccosh|arctanh|sinh|cosh|tanh|abs|sin|cos|tan|arctan|arcsin|arccos|ln|log|sqrt|x|y|e|pi|\d+(\.\d+)?|[\+\-\*\/\^\(\)])+$/;
     if (!token_regex.test(form))
@@ -133,6 +160,14 @@ function syntax(form) {
     return true;
 }
 
+/**
+ * Checks if user's graph form input is correct and my function could handle this input
+ * @param {string} input - User graph form input string
+ * @returns {array} -  Returns array with 4 variables: error_check (number, -1 the input has an error, otherwise 0)
+ *                                                     left_side (String that is the left side of the equation input)
+ *                                                     right_side (String that is the right side of the equation input)
+ *                                                     comparison (number that represents type of comparison in the equation input)
+ */
 function analysis(input){
     input = input.replaceAll(' ','');
     input = input.toLowerCase();
@@ -158,6 +193,12 @@ function analysis(input){
     return [0, left_side, right_side, comp];
 }
 
+/**
+ * Tokenizing input form by checking users input and matching it into well defined mathematic syntax that can be used in this graph canvas
+ * Its forming an array of that because we then use Shunting Yard Algorithm to calculate matching points and values in this formula
+ * @param {string} form - User's oneside equation from his input, or some 2 variables formula
+ * @returns {array} - Return the form after it has been tokenized
+ */
 function tokening(form){
     
     var tokens = [];
@@ -227,6 +268,14 @@ function tokening(form){
     return output_form;
 }
 
+/**
+ * Calculates value of point x,y on the graph with some inputed formula that has been Tokenized 
+ * The calculation is based on Shunting Yard Algorithm and defined math symbols, functions and notations for this kind of graph
+ * @param {number} x - Input of x point
+ * @param {number} y - Input of y point
+ * @param {array} form - Formula that was tokenized from string formula
+ * @returns {number} - Returns the value of inputed X,Y when putted inside this formula 
+ */
 function formula(x, y, form){
     var eval_stack = [];
     var value_a, value_b;
@@ -322,13 +371,27 @@ function formula(x, y, form){
     return eval_stack[0];
 }
 
+/**
+ * Checking if the left side is bigger then the right side in some x,y
+ * @param {number} x - X position on the graph
+ * @param {numer} y - Y position on the graph
+ * @param {string} left_form - Left side from the user's equation input after tokenizing
+ * @param {string} right_form - Right side from the user's equation input after tokenizing
+ * @returns {bool} - Return if the left side is bigger then the right side in some x,y
+ */
 function r_state(x, y, left_form, right_form){
-
     var left_side = formula(x, y, left_form);
     var right_side = formula(x, y, right_form);  
     return left_side - right_side > 0;
 }
 
+/**
+ * Checking the full state of a rectangle on user's input graph
+ * @param {number array} u - Rectangle min and max X,Y positions
+ * @param {array} left_side - Left side from user's equation input after tokenizing
+ * @param {array} right_side - Right side from user's equation input after tokenizing
+ * @returns {array} - Returns the state of each vertex of the rectangle from user's equation input
+ */
 function r_region(u, left_side, right_side){
     var ratio_x = (R - L) / W;
     var ratio_y = (T - B) / H;
@@ -345,6 +408,16 @@ function r_region(u, left_side, right_side){
     return state;
 }
 
+/**
+ * Calculates state of a rectangle with user's input equation (after tokenizing), 
+ * from the comparison type it colors the rectangle on the graph canvas
+ * and returns if the state of the rectangle changed inside of it
+ * @param {array} u - Rectangle min and max X,Y positions
+ * @param {array} left_side - Left side from user's equation input after tokenizing
+ * @param {array} right_side - Right side from user's equation input after tokenizing
+ * @param {number} comp - Type of comparison from user's equation input
+ * @returns {bool} - Returns if the state of a rectangle changes inside the rectangle
+ */
 function define_color(u, left_side, right_side, comp){
     /*
     left side = right side-> 0
@@ -423,6 +496,15 @@ function define_color(u, left_side, right_side, comp){
     }
 }
 
+/**
+ * Draws the graph on canvas using user's input and "Reliable Two-Dimensional Graphing Methods
+ * for Mathematical Formulae with Two Free Variables" paper by Jeff Tupper.
+ * We paint area of rectangles, if the state of the rectangle in the user's equation is changes, we divide the rectangle into 4 pieces
+ * Then we recreate this algorithm.
+ * @param {array} left_side - Left side from user's equation input after tokenizing
+ * @param {array} right_side - Right side from user's equation input after tokenizing
+ * @param {number} comp - Type of comparison from user's equation input
+ */
 function graph(left_side, right_side, comp){
     paint_area(RED, [0, W, 0, H]);
     var k = gcd(W / PIXEL, H / PIXEL);
@@ -457,6 +539,12 @@ function graph(left_side, right_side, comp){
     }
 }
 
+/**
+ * Creeates the graph canvas from user's input and draws on it grid lines
+ * @param {array} left_side - Left side from user's equation input after tokenizing
+ * @param {array} right_side - Right side from user's equation input after tokenizing
+ * @param {number} comp - Type of comparison from user's equation input
+ */
 function setup_graph(left_side, right_side, comp){
     graph(left_side, right_side, comp);
     
@@ -472,6 +560,16 @@ function setup_graph(left_side, right_side, comp){
     }
 }
 
+/**
+ * Reads user's input, analyzes it for right syntax.
+ * Then, if its alright, tokenize left and right sides of the equesion and creates the graph canvas
+ * @param {string} input - User's graph form input
+ * @param {number} user_l - Minimum X on the graph canvas
+ * @param {number} user_r - Maximum X on the graph canvas
+ * @param {number} user_b - Minimum Y on the graph canvas 
+ * @param {number} user_t - Maximum Y on the graph canvas
+ * @returns {string} - Returns error check string
+ */
 function create_graph(input, user_l, user_r, user_b, user_t){
     var output = analysis(input);
     var error = output[0];
@@ -489,5 +587,3 @@ function create_graph(input, user_l, user_r, user_b, user_t){
     setup_graph(left_side, right_side, comp);
     return "All Good";
 }
-
-
