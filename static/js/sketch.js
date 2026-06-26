@@ -109,7 +109,7 @@ function parentheses(form){
         }
         else if(c == ")"){
             if(last_par == -1 || last_par + 1 == i)
-                return 1;
+                return false;
             else{
                 par -= 1;
             }
