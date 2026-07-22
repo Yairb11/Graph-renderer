@@ -3,3 +3,5 @@
 main.py
 uv.lock
 
+__pycache__/
+*.py[cod]
