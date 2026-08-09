@@ -1,1 +1,234 @@
-/*You can add later some style that you want*/
+:root {
+    --bg: #f4f6f9;
+    --surface: #ffffff;
+    --border: #dfe3ea;
+    --text: #1a1d23;
+    --muted: #626b7a;
+    --accent: #2f6df6;
+    --accent-hover: #2557cd;
+    --danger: #c62b2b;
+    --danger-bg: #fdecec;
+    --radius: 10px;
+    --shadow: 0 1px 2px rgba(16, 24, 40, 0.05), 0 4px 12px rgba(16, 24, 40, 0.05);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 2.5rem 1.25rem 4rem;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.page {
+    max-width: 1340px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    letter-spacing: -0.01em;
+}
+
+.subtitle {
+    margin: 0.25rem 0 0;
+    color: var(--muted);
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.25rem;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.field > label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+}
+
+.field-row {
+    display: flex;
+    gap: 0.625rem;
+}
+
+input {
+    font: inherit;
+    color: inherit;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.55rem 0.7rem;
+}
+
+input:hover {
+    border-color: #c6cdd9;
+}
+
+input:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+input[aria-invalid="true"] {
+    border-color: var(--danger);
+    background: var(--danger-bg);
+}
+
+#user_input {
+    flex: 1;
+    font-family: "Cascadia Mono", Consolas, "SF Mono", Menlo, monospace;
+}
+
+button.primary {
+    font: inherit;
+    font-weight: 600;
+    color: #ffffff;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    padding: 0.55rem 1.5rem;
+    cursor: pointer;
+}
+
+button.primary:hover {
+    background: var(--accent-hover);
+}
+
+button.primary:active {
+    transform: translateY(1px);
+}
+
+.error {
+    margin: 0;
+    color: var(--danger);
+    font-size: 0.9rem;
+}
+
+.error::before {
+    content: "\26A0";
+    margin-right: 0.4rem;
+}
+
+.ranges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.range {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem 0.7rem;
+}
+
+.range legend {
+    padding: 0 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+}
+
+.range label {
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.range input {
+    width: 6.5rem;
+}
+
+.arrow {
+    color: var(--muted);
+}
+
+.hint {
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+.hint summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.hint ul {
+    margin: 0.75rem 0 0;
+    padding-left: 1.1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.35rem 1.5rem;
+}
+
+.plot {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+#canvas-holder {
+    width: 100%;
+    line-height: 0;
+}
+
+#canvas-holder canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.caption {
+    margin: 0;
+    min-height: 1.5em;
+    color: var(--muted);
+    font-family: "Cascadia Mono", Consolas, "SF Mono", Menlo, monospace;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+    .field-row {
+        flex-direction: column;
+    }
+
+    .range {
+        flex-wrap: wrap;
+    }
+}

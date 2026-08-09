@@ -1,23 +1,82 @@
-# Graph renderer with 2 free variables xy 
-## Quick Summery 
-p5.js Javascript Desmos like project that runs on FastApi python as a backend.
+# Graph renderer with 2 free variables xy
+## Quick Summery
+p5.js Javascript Desmos like project that runs on Flask python as a backend.
 Renders graph with 2 free variables XY and with some additional useful math functions and constants
-Its UI UX is very minimal as I used the p5.js library for only the basic render view.
 I used `Reliable Two Dimensional Graphing Methods For Mathematival Formulae With Two Free Variables by Jeff Tupper` paper with Shunting Yard Algorithm on users input.
 
-(*The paper*: https://www.dgp.toronto.edu/~mooncake/papers/SIGGRAPH2001_Tupper.pdf)
+## Built From
+> **Reliable Two-Dimensional Graphing Methods for Mathematical Formulae with Two Free Variables**
+> Jeff Tupper, SIGGRAPH 2001
+> https://www.dgp.toronto.edu/~mooncake/papers/SIGGRAPH2001_Tupper.pdf
+
+The whole renderer is built on this paper. The recursive subdivision described in
+[Plotting Process](#plotting-process) is the method it presents, and it is what makes the graph
+both precise and fast enough to draw in the browser.
 
 ## Install and Use
+> **This project is built with [`uv`](https://docs.astral.sh/uv/), and `uv` is the recommended way to run it.**
+> `pyproject.toml` and `uv.lock` are the source of truth for the dependencies, and
+> `requirements.txt` is just an export generated from them. The plain `pip` steps below are there
+> for the basic use case, if you do not have `uv`.
+
 1. Clone this repo
-2. Install all `requirements.txt`:
+2. Create a virtual environment:
+```bash
+python -m venv .venv
+```
+3. Activate it:
+```bash
+# Windows
+.venv\Scripts\activate
+
+# macOS / Linux
+source .venv/bin/activate
+```
+4. Install all `requirements.txt`:
 ```bash
 pip install -r requirements.txt
 ```
-3. Run `uvicode` on `main.py`:
+5. Run `main.py`:
 ```bash
-uvicorn main:app --reload
+python main.py
 ```
-4. Play with it in `http://127.0.0.1:8000`
+6. Play with it in `http://127.0.0.1:5000`
+
+### Using uv (recommended)
+1. Sync the environment:
+```bash
+uv sync
+```
+2. Run `main.py`:
+```bash
+uv run python main.py
+```
+Or through the Flask CLI:
+```bash
+uv run flask --app main run
+```
+
+## Project Structure
+### Backend
+| File | Responsibility |
+|---|---|
+| `main.py` | Entry point, starts the development server |
+| `app.py` | `create_app()` factory that builds and configures Flask |
+| `routes.py` | The `graph` blueprint serving `/` and `/graph` |
+| `config.py` | Host, port, debug flag and the template/static directories |
+
+### Frontend
+| File | Responsibility |
+|---|---|
+| `static/js/config.js` | Canvas size, viewport bounds, colors, comparison kinds, function names |
+| `static/js/validator.js` | Splits the equation and rejects malformed syntax |
+| `static/js/tokenizer.js` | Shunting Yard conversion into reverse polish notation |
+| `static/js/evaluator.js` | Stack machine that evaluates an expression at a point |
+| `static/js/renderer.js` | Axes, region colors and the recursive subdivision |
+| `static/js/sketch.js` | p5.js entry point and the `createGraph()` API |
+| `static/js/ui.js` | Reads the form, shows errors, captions the canvas |
+| `static/styles/style.css` | Page styling |
+| `templates/graph.html` | Page markup |
 
 ## Operations
 This desmos like renderer can understand some operations, function and constants:
@@ -28,7 +87,7 @@ This desmos like renderer can understand some operations, function and constants
 5) Known constants e and pi.
 6) Different comparisons: = > < >= <= >/<
 
-## Plotting Process 
+## Plotting Process
 ### Compiling the Input
 **Making the program understand users input.**
 **The input runs into this process:**
@@ -40,10 +99,10 @@ This desmos like renderer can understand some operations, function and constants
 **Now we have input output process with x,y and main function as an input and output as boolean object that represents if the main equation is true with this given variables.**
 
 ### The Problem
-We cant plot each x,y point to check for them, it would take a lot of time. So we need some computation trick for this. 
+We cant plot each x,y point to check for them, it would take a lot of time. So we need some computation trick for this.
 
 ### The Solution: Recursive Subdivision
-For this, the paper by `Jeff Tupper` comes in handy.
+For this, the paper by `Jeff Tupper` from [Built From](#built-from) comes in handy.
 
 ### How it Works
 1. **initial Division**: The graphing space divided into 4 initial blocks

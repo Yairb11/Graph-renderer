@@ -1,17 +1,10 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
+"""Entry point that starts the graph renderer development server."""
+
+from app import create_app
+from config import Config
+
+app = create_app()
 
 
-app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
-
-@app.get('/', response_class=HTMLResponse)
-@app.get('/graph', response_class=HTMLResponse)
-def run_graph(request: Request):
-    """Runs the template"""
-    return templates.TemplateResponse(
-        request=request, name="graph.html"
-    )
+if __name__ == "__main__":
+    app.run(host=Config.HOST, port=Config.PORT, debug=Config.DEBUG)

@@ -4,48 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Graph Renderer</title>
-    <link href="{{url_for('static',path='styles/style.css')}}" rel = "stylesheet"/> <!--Connecting to stylesheet-->
-    <script src="{{url_for('static', path='js/p5.min.js')}}"></script> <!--Connecting to p5.js-->
-    <script src="{{url_for('static', path='js/sketch.js')}}"></script> <!--Connecting to js code-->
-    <script>
-        /**
-        * Creating the graph canvas from the user input
-        * @param {string} user_input - User graph input with 2 variables
-        * @param {number} l_border - Minimum X value input in the graph
-        * @param {number} r_border - Maximum X value input in the graph
-        * @param {number} b_border - Minimum Y value input in the graph
-        * @param {number} t_border - Maximum Y value input in the graph
-        * @return {canvas} - The graph canvas for the pagw from the function create_graph
-        */
-        function send_graph(){
-            var user_input = document.getElementById("user_input").value;
-            var l_border = parseFloat(document.getElementById("L_border").value);
-            var r_border = parseFloat(document.getElementById("R_border").value);
-            var b_border = parseFloat(document.getElementById("B_border").value);
-            var t_border = parseFloat(document.getElementById("T_border").value);
-
-            if((r_border - l_border <= 0) || (t_border - b_border <= 0))
-                alert("Try Again");
-
-            var output = create_graph(user_input, l_border, r_border, b_border, t_border);
-            if(output != "All Good")
-                alert(output);
-            console.log(output);
-            document.getElementById("output").innerHTML = user_input;
-            
-
-        }
-    </script>
+    <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet"/>
 </head>
 <body>
-    <!--Output canvas-->
-    <div id="output"></div>
-    <!--User Input-->
-    <input type="text" id ="user_input" placeholder="Write the function...">
-    <button id="graph" onclick="send_graph()">Graph</button>
-     L: <input type="number" id="L_border" step="0.01" value="-10" required><!--Minimum X value input-->
-     R: <input type="number" id="R_border" step="0.01" value="10" required><!--Maximum X value input-->
-     B: <input type="number" id="B_border" step="0.01" value="-10" required><!--Minimum Y value input-->
-     T: <input type="number" id="T_border" step="0.01" value="10" required><!--Maximum Y value input-->
+    <div class="page">
+        <header class="page-header">
+            <h1>Graph Renderer</h1>
+            <p class="subtitle">Plot equations and inequalities with two free variables, x and y.</p>
+        </header>
+
+        <section class="card controls">
+            <div class="field">
+                <label for="user_input">Function</label>
+                <div class="field-row">
+                    <input type="text" id="user_input" placeholder="y = sin(x)" autocomplete="off" spellcheck="false">
+                    <button type="button" id="graph" class="primary">Plot</button>
+                </div>
+                <p id="error" class="error" role="alert" hidden></p>
+            </div>
+
+            <div class="ranges">
+                <fieldset class="range">
+                    <legend>X range</legend>
+                    <label for="L_border">min</label>
+                    <input type="number" id="L_border" step="0.01" value="-10" required>
+                    <span class="arrow">&rarr;</span>
+                    <label for="R_border">max</label>
+                    <input type="number" id="R_border" step="0.01" value="10" required>
+                </fieldset>
+
+                <fieldset class="range">
+                    <legend>Y range</legend>
+                    <label for="B_border">min</label>
+                    <input type="number" id="B_border" step="0.01" value="-10" required>
+                    <span class="arrow">&rarr;</span>
+                    <label for="T_border">max</label>
+                    <input type="number" id="T_border" step="0.01" value="10" required>
+                </fieldset>
+            </div>
+
+            <details class="hint">
+                <summary>Supported operations</summary>
+                <ul>
+                    <li><strong>Operators</strong>: + &minus; * / ^</li>
+                    <li><strong>Comparisons</strong>: = &gt; &lt; &gt;= &lt;= &gt;/&lt;</li>
+                    <li><strong>Functions</strong>: abs() ln() log() sqrt()</li>
+                    <li><strong>Trigonometry</strong>: sin() cos() tan() arcsin() arccos() arctan()</li>
+                    <li><strong>Hyperbolic</strong>: sinh() cosh() tanh() arcsinh() arccosh() arctanh()</li>
+                    <li><strong>Constants</strong>: e pi</li>
+                </ul>
+            </details>
+        </section>
+
+        <section class="card plot">
+            <div id="canvas-holder"></div>
+            <p id="output" class="caption"></p>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/p5.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/validator.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tokenizer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/evaluator.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/renderer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sketch.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ui.js') }}"></script>
 </body>
 </html>
